@@ -25,50 +25,43 @@
         }
     </style>
 </head>
-<?php
 
-use GuzzleHttp\Client;
-
-$client = new Client([
-    // Base URI is used with relative requests
-    'base_uri' => 'https://api.openweathermap.org/',
-    // You can set any number of default request options.
-    'timeout'  => 2.0,
-]);
-
-$API_FORECAST_KEY = '1c6f33573f2f92814803b74cae54cacd';
-$response = $client->get('https://api.openweathermap.org/data/2.5/onecall?lat=41.39&lon=2.15&units=metric&exclude=current,minutely,hourly&appid='. $API_FORECAST_KEY);
-$forecast = json_decode($response->getBody()->getContents(),  true);
-
-
-echo "<table>";
-
-$variables = ['humidity', 'pressure', 'wind_speed', 'clouds', 'min_temp', 'max_temp'];
-echo "<tr>";
-foreach ($variables as $var){
-    echo "<td>{$var} </td>";
-}
-echo "</tr>";
-
-foreach($forecast['daily'] as $day){
-    echo "<tr>";
-    foreach ($variables as $var){
-        if($var == "min_temp"){
-            echo "<td>{$day['temp']['min']}</td>";
-        } elseif ($var == "max_temp"){
-            echo "<td>{$day['temp']['max']}</td>";
-        } else
-            echo "<td>{$day[$var]}</td>";
-    }
-    echo "</tr>";
-}
-
-echo "</table>";
-
-?>
 
 <body class="antialiased">
-<div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
+<div class="relative flex items-top justify-center min-h-screen sm:items-center py-4 sm:pt-0 font-semibold">
+
+    <table>
+
+        <tr>
+            @foreach($variables as $var)
+                <th>{{$var}}</th>
+            @endforeach
+        </tr>
+
+        @foreach($forecast as $day)
+            <tr>
+                @foreach ($variables as $var)
+                    @if($var == 'date')
+                        <td>{{\Carbon\Carbon::createFromTimeStamp(strtotime($day['dt']))->toDateString()}}</td>
+                    @elseif($var == 'max_temp')
+                        <td>{{$day['temp']['max']}}</td>
+                    @elseif($var == 'min_temp')
+                        <td>{{$day['temp']['min']}}</td>
+                    @else
+                        <td>{{$day[$var]}}</td>
+                    @endif
+                @endforeach
+            </tr>
+        @endforeach
+
+    </table>
+
+
 </div>
+
 </body>
 </html>
+
+
+
+
