@@ -41,15 +41,8 @@
         @foreach($forecast as $day)
             <tr>
                 @foreach ($variables as $var)
-                    @if($var == 'date')
-                        <td>{{\Carbon\Carbon::createFromTimeStamp(strtotime($day['dt']))->toDateString()}}</td>
-                    @elseif($var == 'max_temp')
-                        <td>{{$day['temp']['max']}}</td>
-                    @elseif($var == 'min_temp')
-                        <td>{{$day['temp']['min']}}</td>
-                    @else
-                        <td>{{$day[$var]}}</td>
-                    @endif
+                    <td>{{$day[$var]}}</td>
+
                 @endforeach
             </tr>
         @endforeach
