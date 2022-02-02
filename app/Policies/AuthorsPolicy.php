@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\authors;
+use App\Models\author;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AuthorsPolicy
@@ -25,10 +25,10 @@ class AuthorsPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\authors  $authors
+     * @param  \App\Models\author  $authors
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, authors $authors)
+    public function view(User $user, author $authors)
     {
         //
     }
@@ -48,10 +48,10 @@ class AuthorsPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\authors  $authors
+     * @param  \App\Models\author  $authors
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, authors $authors)
+    public function update(User $user, author $authors)
     {
         //
     }
@@ -60,10 +60,10 @@ class AuthorsPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\authors  $authors
+     * @param  \App\Models\author  $authors
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, authors $authors)
+    public function delete(User $user, author $authors)
     {
         //
     }
@@ -72,10 +72,10 @@ class AuthorsPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\authors  $authors
+     * @param  \App\Models\author  $authors
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, authors $authors)
+    public function restore(User $user, author $authors)
     {
         //
     }
@@ -84,10 +84,10 @@ class AuthorsPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\authors  $authors
+     * @param  \App\Models\author  $authors
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, authors $authors)
+    public function forceDelete(User $user, author $authors)
     {
         //
     }

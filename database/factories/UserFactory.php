@@ -1,39 +1,34 @@
 <?php
 
-namespace Database\Factories;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-
-class UserFactory extends Factory
+class CreateBooksTable extends Migration
 {
     /**
-     * Define the model's default state.
+     * Run the migrations.
      *
-     * @return array
+     * @return void
      */
-    public function definition()
+    public function up()
     {
-        return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token' => Str::random(10),
-        ];
+        Schema::create('books', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->foreignId('author_id')->constrained('authors');
+            $table->unsignedInteger('pages');
+            $table->timestamps();
+        });
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * Reverse the migrations.
      *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     * @return void
      */
-    public function unverified()
+    public function down()
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'email_verified_at' => null,
-            ];
-        });
+        Schema::dropIfExists('books');
     }
 }
