@@ -18,17 +18,19 @@ use Illuminate\Http\Request;
 
 Route::get('/', 'App\Http\Controllers\WeatherController@show_forecast');
 
-Route::post('books/{id?}/save', 'App\Http\Controllers\BookController@save');
+Route::get('books/loadBook', 'App\Http\Controllers\BookController@loadBook');
+Route::post('books/{id}/save', 'App\Http\Controllers\BookController@save');
+Route::post('books/save', 'App\Http\Controllers\BookController@save');
 Route::get('books/', 'App\Http\Controllers\BookController@index');
 Route::get('books/{id}', 'App\Http\Controllers\BookController@get');
-Route::get('books/{id}/delete', 'App\Http\Controllers\BookController@delete');
+Route::post('books/{id}/delete', 'App\Http\Controllers\BookController@delete');
 Route::get('books/{id}/edit', 'App\Http\Controllers\BookController@edit');
 
-
-Route::post('authors/{id?}/save', 'App\Http\Controllers\AuthorController@save');
-Route::get('authors/getAll', 'App\Http\Controllers\AuthorController@getAllJson');
+Route::get('authors/loadAuthor', 'App\Http\Controllers\AuthorController@loadAuthor');
+Route::post('authors/{id}/save', 'App\Http\Controllers\AuthorController@save');
+Route::post('authors/save', 'App\Http\Controllers\AuthorController@save');
 Route::get('authors/', 'App\Http\Controllers\AuthorController@index');
 Route::get('authors/{id}', 'App\Http\Controllers\AuthorController@get');
-Route::get('authors/{id}/delete', 'App\Http\Controllers\AuthorController@delete');
+Route::post('authors/{id}/delete', 'App\Http\Controllers\AuthorController@delete');
 Route::get('authors/{id}/edit', 'App\Http\Controllers\AuthorController@edit');
 

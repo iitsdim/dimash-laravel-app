@@ -15,45 +15,42 @@ class AuthorController extends Controller
 
     }
 
-    public function index()
+
+
+    public function index(Request $request)
     {
-        $authors = Author::all(['id', 'name'])->toArray();
-        return view('authors', ['authors' => $authors]);
+        $sort_by = $request->input('sort_by', 'id');
+        $order = $request->input('order', 'ASC');
+        $paginate = $request->input('paginate', 5);
+        $authors = Author::orderBy($sort_by, $order)->paginate($paginate);
+
+        return view('authors', ['authors' => $authors, 'keys' => ['id', 'name']]);
     }
 
 
-    public static function getAllJson()
+    public static function getAll()
     {
-        $authors = Author::all(['id', 'name'])->toArray();
-        return $authors;
+        return Author::all(['id', 'name'])->toArray();
     }
 
     public function get(int $id)
     {
-        $author = Author::find($id);
-        if($author) {
-            $author = $author->toArray();
-            unset($author['created_at']);
-            unset($author['updated_at']);
-            return view('authors', ['authors' => [$author]]);
-        } else{
-            return view('authors', ['authors' => []]);
-        }
-
+        $author = Author::findOrFail($id);
+        $author = $author->toArray();
+        return view('authors', ['authors' => [$author]]);
     }
 
     public function save(Request $request, int $id = null)
     {
         $fields = $request->toArray();
-        if(isset($fields['_token']))
+        if(isset($fields['_token'])) {
             unset($fields['_token']);
+        }
         if($id === null){
             Author::factory()->create($fields);
         }
         else{
-            $author = Author::find($id);
-            if($author === null)
-                return Redirect::back()->withErrors(['msg' => 'Author not found.']);
+            $author = Author::findOrFail($id);
             foreach ($fields as $key => $val){
                 $author->$key = $val;
             }
@@ -64,17 +61,12 @@ class AuthorController extends Controller
 
     public function delete(int $id)
     {
-        $author = Author::find($id);
-
-        if($author === null)  {
-            return Redirect::back()->withErrors(['msg' => 'Author not found.']);
-        }
+        $author = Author::findOrFail($id);
 
         if($author->books()->count() > 0){
             return Redirect::back()->withErrors(['msg' => 'The author has some books and cannot be deleted.']);
         }
 
-        $author->books()->delete();
         $author->delete();
 
         return redirect()->action([AuthorController::class, 'index']);
@@ -82,10 +74,13 @@ class AuthorController extends Controller
 
     public function edit(int $id)
     {
-        $author = Author::find($id);
-        if($author === null)
-            return Redirect::back()->withErrors(['msg' => 'Author not found.']);
+        $author = Author::findOrFail($id);
         return view('edit_author', ['id' => $id, 'name' => $author->name]);
+    }
+
+    public function loadAuthor()
+    {
+        return view('load_author');
     }
 
 }

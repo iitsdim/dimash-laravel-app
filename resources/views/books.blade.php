@@ -3,53 +3,91 @@
 <head>
     <meta charset="utf-8">
     <title>Books</title>
-
+    <link rel="stylesheet" type="text/css" href="{{ asset('/css/app.css') }}" >
 </head>
 
 
 <body>
-<div>
+<div style="text-align: center">
+    <h1>Books</h1>
 
-    <h1 align="center">Books</h1>
+    <table>
 
-    <table align="center">
+        <thead>
 
-        @if(count($books) > 0)
-            <tr>
-                @foreach($books[0] as $key=>$val)
-                    <th>
-                        {{$key}}
-                    </th>
-                @endforeach
-            </tr>
-        @endif
+        <tr>
+            @foreach($keys as $key)
+                <td>
+                    <a href="?sort_by={{$key}}&order=DESC&page={{$_GET['page'] ?? 1}}">
+                        &uarr;
+                    </a>
 
+                    {{$key}}
+
+                    <a href="?sort_by={{$key}}&order=ASC&page={{$_GET['page'] ?? 1}}">
+                        &darr;
+                    </a>
+
+
+                </td>
+            @endforeach
+        </tr>
+
+
+        </thead>
+
+        <tbody>
         @foreach($books as $book)
             <tr>
-                @foreach($book as $key=>$val)
+                @foreach($keys as $key)
                     <td>
-                        {{$val}}
+                        {{$book->$key}}
                     </td>
                 @endforeach
 
                 <td>
-                    <a href="/books/{{$book['id']}}/delete">
-                        Delete
-                    </a>
-
+                    <form action="/books/{{$book->id}}/delete" method="post">
+                        @csrf
+                        <input type="submit" value="Delete">
+                    </form>
                 </td>
+
                 <td>
-                    <a href="/books/{{$book['id']}}/edit">
+                    <a href="/books/{{$book->id}}/edit">
                         Edit
                     </a>
                 </td>
+
             </tr>
         @endforeach
-
+        </tbody>
 
     </table>
 
 
+    <div class="pagination" style="display: flex; justify-content: center; align-content: center; padding-top: 10px;">
+
+        <button>
+            <a class="page-link" href="{{$books->previousPageUrl()}}">
+                Previous
+            </a>
+        </button>
+
+        <button>
+            <a class="page-link" href="{{$books->nextPageUrl()}}">
+                Next
+            </a>
+        </button>
+
+    </div>
+
+    <div style="display: flex; justify-content: center; align-content: center; padding-top: 10px;">
+        <button>
+            <a href="/books/loadBook">
+                Add Book
+            </a>
+        </button>
+    </div>
 </div>
 
 </body>

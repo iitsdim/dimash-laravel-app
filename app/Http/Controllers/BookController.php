@@ -7,6 +7,8 @@ use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
+use phpDocumentor\Reflection\Types\Collection;
+use Psy\TabCompletion\AutoCompleter;
 
 class BookController extends Controller
 {
@@ -15,33 +17,25 @@ class BookController extends Controller
 
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::all(['id', 'name', 'pages', 'author_id'])->toArray();
+        $sort_by = $request->input('sort_by', 'id');
+        $order = $request->input('order', 'ASC');
+        $paginate = $request->input('paginate', 5);
+        $books = Book::leftJoin('authors', 'authors.id', '=', 'books.author_id')
+            ->select(['books.id', 'books.title', 'books.pages', 'authors.name as author_name'])
+            ->orderBy($sort_by, $order)
+            ->paginate($paginate);
 
-        foreach ($books as &$book){
-            unset($book['author_id']);
-            $book['author_name'] = $book['author']['name'];
-            unset($book['author']);
-        }
-
-        return view('books', ['books' => $books]);
+        return view('books', ['books' => $books, 'keys' => ['id', 'title', 'pages', 'author_name']]);
     }
 
     public function get(int $id)
     {
-        $book = Book::find($id);
-        if($book) {
-            $book = $book->toArray();
-            unset($book['author_id']);
-            $book['author_name'] = $book['author']['name'];
-            unset($book['author']);
-            unset($book['created_at']);
-            unset($book['updated_at']);
-            return view('books', ['books' => [$book]]);
-        } else{
-            return view('books', ['books' => []]);
-        }
+        $book = Book::findOrFail($id);
+        $book->author_name = $book->author->name;
+        $book = $book->makeHidden('author')->toArray();
+        return view('books', ['books' => [$book]]);
     }
 
     public function save(Request $request, int $id = null)
@@ -54,13 +48,11 @@ class BookController extends Controller
         if($id === null){
             Book::factory()->create($fields);
         } else{
-            $book = Book::find($id);
-            if( !($book === null)){
-                foreach ($fields as $key => $val){
-                    $book->$key = $val;
-                }
-                $book->save();
+            $book = Book::findOrFail($id);
+            foreach ($fields as $key => $val){
+                $book->$key = $val;
             }
+            $book->save();
         }
 
         return redirect()->action([BookController::class, 'index']);
@@ -68,10 +60,7 @@ class BookController extends Controller
 
     public function delete(int $id)
     {
-        $book = Book::find($id);
-
-        if($book === null)
-            return null;
+        $book = Book::findOrFail($id);
 
         $book->delete();
 
@@ -80,11 +69,15 @@ class BookController extends Controller
 
     public function edit(int $id)
     {
-        $book = Book::find($id);
-        if($book === null)
-            return Redirect::back()->withErrors(['msg' => 'Book not found.']);
-        $authors = AuthorController::getAllJson();
-        return view('edit_book', ['id' => $id, 'name' => $book->name, 'pages' => $book->pages, 'author_id' => $book->author_id, 'authors' => $authors]);
+        $book = Book::findOrFail($id);
+        $authors = AuthorController::getAll();
+        return view('edit_book', ['id' => $id, 'title' => $book->title, 'pages' => $book->pages, 'author_id' => $book->author_id, 'authors' => $authors]);
+    }
+
+    public function loadBook()
+    {
+        $authors = AuthorController::getAll();
+        return view('load_book', ['authors' => $authors]);
     }
 
 }

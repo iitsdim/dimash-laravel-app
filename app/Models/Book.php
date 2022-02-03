@@ -10,7 +10,7 @@ class Book extends Model
     use HasFactory;
 
     protected $guarded = [];
-    protected $with = ['author'];
+    protected $hidden = ['author_id', 'created_at', 'updated_at'];
 
     public function author(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
