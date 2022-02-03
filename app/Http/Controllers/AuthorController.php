@@ -16,7 +16,6 @@ class AuthorController extends Controller
     }
 
 
-
     public function index(Request $request)
     {
         $sort_by = $request->input('sort_by', 'id');
@@ -35,35 +34,36 @@ class AuthorController extends Controller
 
     public function get(int $id)
     {
-        $author = Author::findOrFail($id);
-        $author = $author->toArray();
-        return view('authors', ['authors' => [$author]]);
+        $author = Author::with(['books'])->findOrFail($id);
+        return view('author_details', ['author' => $author]);
     }
 
     public function save(Request $request, int $id = null)
     {
         $fields = $request->toArray();
-        if(isset($fields['_token'])) {
+        if (isset($fields['_token'])) {
             unset($fields['_token']);
         }
-        if($id === null){
-            Author::factory()->create($fields);
-        }
-        else{
+        if ($id === null) {
+            $author = Author::factory()->create($fields);
+        } else {
             $author = Author::findOrFail($id);
-            foreach ($fields as $key => $val){
+            foreach ($fields as $key => $val) {
                 $author->$key = $val;
             }
             $author->save();
         }
-        return redirect()->action([AuthorController::class, 'index']);
+
+        return redirect()->action(
+            [AuthorController::class, 'get'], ['id' => $author->id]
+        );
     }
 
     public function delete(int $id)
     {
         $author = Author::findOrFail($id);
 
-        if($author->books()->count() > 0){
+        if ($author->books()->count() > 0) {
             return Redirect::back()->withErrors(['msg' => 'The author has some books and cannot be deleted.']);
         }
 

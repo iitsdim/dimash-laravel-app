@@ -3,14 +3,13 @@
 <head>
     <meta charset="utf-8">
     <title>Authors</title>
-    <link rel="stylesheet" type="text/css" href="{{ asset('/css/app.css') }}" >
+    <link rel="stylesheet" type="text/css" href="{{ asset('/css/app.css') }}">
 </head>
 
 <body>
 <div style="text-align: center">
 
     <h1>Authors</h1>
-
 
 
     <table>
@@ -38,9 +37,16 @@
             <tr>
                 @foreach($keys as $key)
                     <td>
-                        {{$author->$key}}
+                        @if($key == 'name')
+                            <a href="/authors/{{$author->id}}">
+                                {{$author->$key}}
+                            </a>
+                        @else
+                            {{$author->$key}}
+                        @endif
                     </td>
                 @endforeach
+
                 <td>
                     <form action="/authors/{{$author->id}}/delete" method="post">
                         @csrf
@@ -57,8 +63,6 @@
 
         @endforeach
         </tbody>
-
-
 
 
     </table>
@@ -88,13 +92,7 @@
     </div>
 
 
-
 </div>
 
 </body>
 </html>
-
-
-
-
-

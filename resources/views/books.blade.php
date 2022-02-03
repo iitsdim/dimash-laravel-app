@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Books</title>
-    <link rel="stylesheet" type="text/css" href="{{ asset('/css/app.css') }}" >
+    <link rel="stylesheet" type="text/css" href="{{ asset('/css/app.css') }}">
 </head>
 
 
@@ -41,7 +41,13 @@
             <tr>
                 @foreach($keys as $key)
                     <td>
-                        {{$book->$key}}
+                        @if($key == 'title')
+                            <a href="/books/{{$book->id}}">
+                                {{$book->$key}}
+                            </a>
+                        @else
+                            {{$book->$key}}
+                        @endif
                     </td>
                 @endforeach
 
@@ -92,8 +98,3 @@
 
 </body>
 </html>
-
-
-
-
-

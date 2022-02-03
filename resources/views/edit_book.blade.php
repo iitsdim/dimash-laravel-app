@@ -12,7 +12,7 @@
 
     <h1 align="center">Edit Book {{$id}}</h1>
 
-    <form action="/books/{{$id}}/save" method="post" >
+    <form action="/books/{{$id}}/save" method="post">
         @csrf
         <label for="Name">
             Name:
@@ -24,7 +24,6 @@
             Pages:
         </label>
         <input type="text" value="{{$pages ?? ''}}" id="pages" name="pages"><br>
-
 
 
         @csrf
@@ -46,8 +45,4 @@
 
 </body>
 </html>
-
-
-
-
 

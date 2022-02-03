@@ -12,7 +12,7 @@
 
     <h1 align="center">Edit Author {{$id}}</h1>
 
-    <form action="/authors/{{$id}}/save" method="post" >
+    <form action="/authors/{{$id}}/save" method="post">
         @csrf
         <label for="Name">
             Name:
@@ -25,8 +25,4 @@
 
 </body>
 </html>
-
-
-
-
 

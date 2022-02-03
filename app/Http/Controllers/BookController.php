@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redirect;
 use phpDocumentor\Reflection\Types\Collection;
 use Psy\TabCompletion\AutoCompleter;
+use Illuminate\Http\RedirectResponse;
 
 class BookController extends Controller
 {
@@ -35,27 +36,29 @@ class BookController extends Controller
         $book = Book::findOrFail($id);
         $book->author_name = $book->author->name;
         $book = $book->makeHidden('author')->toArray();
-        return view('books', ['books' => [$book]]);
+        return view('book_details', ['book' => $book, 'keys' => ['id', 'title', 'pages', 'author_name']]);
     }
 
     public function save(Request $request, int $id = null)
     {
         $fields = $request->toArray();
-        if(isset($fields['_token'])){
+        if (isset($fields['_token'])) {
             unset($fields['_token']);
         }
 
-        if($id === null){
-            Book::factory()->create($fields);
-        } else{
+        if ($id === null) {
+            $book = Book::factory()->create($fields);
+        } else {
             $book = Book::findOrFail($id);
-            foreach ($fields as $key => $val){
+            foreach ($fields as $key => $val) {
                 $book->$key = $val;
             }
             $book->save();
         }
 
-        return redirect()->action([BookController::class, 'index']);
+        return redirect()->action(
+            [BookController::class, 'get'], ['id' => $book->id]
+        );
     }
 
     public function delete(int $id)
